@@ -172,6 +172,10 @@ bool Lexer::isSpecial(char c){
             return true;
         case ')':
             return true;
+        case '{':
+            return true;
+        case '}':
+            return true;
         case ',':
             return true;
         case '+':

@@ -147,11 +147,11 @@
 
 .timer_multiplier: DB 60000
 .last_print_loc: DB 61952
-.num_to_array_array: DB [ 0, 0, 0, 0]
+.num_to_array_array: DB [4]
 
 .KEY_q: DB 71
 
-.MEM_SIZE: DB 32000
+.MEM_SIZE: DB 64000
 .ROWS: DB 32
 .COLUMNS: DB 64
 .MONITOR_ADDRESS: DB 61952

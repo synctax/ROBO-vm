@@ -166,15 +166,23 @@ std::vector<i16> compile(strings s){
                         prog.push_back((i16) s[i][j]);
                     }
                     prog.push_back(0);
-                }else if (s[i] == "["){
+                }else if (s[i] == "{"){
                     i++;
                     std::vector<i16> values;
-                    while (s[i] != "]"){
-                        if(s[i] != ",") values.push_back(getInt(s[i]));
+                    while (s[i] != "}"){
+                        if(s[i] != "," && s[i] != " ") values.push_back(getInt(s[i]));
                         i++;
                     }
-                    prog.push_back(values.size()+1);                    
+                    prog.push_back(values.size());                    
                     prog.insert(prog.end(),values.begin(),values.end());
+                }else if(s[i] == "["){
+                    i++;
+                    int size = getInt(s[i]);
+                    prog.push_back(size);
+                    for(int j = 0; j < size; j++){
+                        prog.push_back(0);
+                    }
+                    i++;
                 }else if(s[i][0] == '.'){
                     if (s[i+1] != ":"){
                         labelRefs[prog.size()] = s[i];
@@ -250,22 +258,25 @@ int getInstructionCode(strings s, i16 i){
         base = 40;
     }else if (s[i] == "CALL"){
         base = 41;
+        base += detectType1(s,i);
     }else if (s[i] == "RET"){
-        base = 42;
+        base = 44;
     }else if (s[i] == "PUSH"){
-        base = 43;
+        base = 45;
         base += detectType2(s,i);
         std::cout << std::endl; // for some reason it doesnt work without this
     }else if (s[i] == "POP"){
-        base = 46;
-    }else if (s[i] == "HLT"){
-        base = 47;
-    }else if (s[i] == "JE"){
         base = 48;
-    }else if (s[i] == "JNE"){
+    }else if (s[i] == "HLT"){
         base = 49;
-    }else if(s[i] == "MOD"){
+    }else if (s[i] == "JE"){
         base = 50;
+        base += detectType1(s,i);
+    }else if (s[i] == "JNE"){
+        base = 53;
+        base += detectType1(s,i);
+    }else if(s[i] == "MOD"){
+        base = 56;
         base += detectType1(s,i);
     }else{
         return -1;

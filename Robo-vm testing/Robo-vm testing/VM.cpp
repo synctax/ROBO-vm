@@ -114,17 +114,17 @@ void VM::run(){
         std::cout << "DX:" << dx << std::endl;
         std::cout << "FLAGS:" << flags << std::endl;
         std::cout << "-------" << std::endl;
-        for(int i = vRamStart; i < vRamStart+30; i++){
-            std::cout << (char) memory[i]; 
-        }
-        std::cout << std::endl;*/
+        //for(int i = 1000; i < 1400; i++){
+           // std::cout << memory[i]; 
+        //}
+        //std::cout << std::endl;
         //std::cout << "-------" << std::endl;
-        //std::cout << memory[keyAddr] << std::endl;
+        //std::cout << memory[keyAddr] << std::endl;*/
         executeNext();
         updateMonitor();
         getKey(); 
     }
-    //std::cout << "halting" << std::endl;
+    std::cout << "halting" << std::endl;
 }
 
 void VM::close(){
@@ -388,46 +388,67 @@ void VM::executeNext(){
             pc = memory[pc+1]-1;
             break;
 
-        case 41:                                                    //CALL address
+        case 41:                                                    //CALL reg
+            sp++;
+            memory[sp] = pc+1;
+            pc = *registers[memory[pc+1]]-1;
+            break;
+
+        case 42:                                                    //CALL address
             sp++;
             memory[sp] = pc+1;
             pc = memory[pc+1]-1;
             break;
 
-        case 42:                                                    //RET
+        case 43:                                                    //CALL regaddress
+            sp++;
+            memory[sp] = pc+1;
+            pc = memory[*registers[memory[pc+1]]]-1;
+            break;
+
+        case 44:                                                    //RET
             pc = memory[sp];
             sp--;
             break;
 
-        case 43:                                                    //PUSH reg
+        case 45:                                                    //PUSH reg
             sp++;
             memory[sp] = *registers[memory[pc+1]];
             pc++;
             break;
 
-        case 44:                                                    //PUSH address
+        case 46:                                                    //PUSH address
             sp++;
             memory[sp] -= memory[memory[pc+1]];
             pc++;
             break;
 
-        case 45:                                                    //PUSH regaddress
+        case 47:                                                    //PUSH regaddress
             sp++;
             memory[sp] = memory[*registers[memory[pc+1]]];
             pc++;
             break;
 
-        case 46:                                                    //POP reg
+        case 48:                                                    //POP reg
             *registers[memory[pc+1]] = memory[sp];
             sp--;
             pc++;
             break;
 
-        case 47:                                                    //HLT
+        case 49:                                                    //HLT
             running = 0;
             break;
 
-        case 48:                                                    //JE address
+        case 50:                                                    //JE reg
+            if (flags == 1){
+                pc = *registers[memory[pc+1]]-1;
+            }else{
+                pc++;
+            }
+            break;
+
+
+        case 51:                                                    //JE address
             if (flags == 1){
                 pc = memory[pc+1]-1;
             }else{
@@ -435,7 +456,24 @@ void VM::executeNext(){
             }
             break;
 
-        case 49:                                                    //JNE address
+         case 52:                                                    //JE regaddress
+            if (flags == 1){
+                pc = memory[*registers[memory[pc+1]]]-1;
+            }else{
+                pc++;
+            }
+            break;
+
+
+        case 53:                                                    //JNE reg
+            if (flags == 0){
+                pc = *registers[memory[pc+1]]-1;
+            }else{
+                pc++;
+            }
+            break;
+
+        case 54:                                                    //JNE address
             if (flags == 0){
                 pc = memory[pc+1]-1;
             }else{
@@ -443,19 +481,27 @@ void VM::executeNext(){
             }
             break;
 
-        case 50:                                                    //MOD reg
+         case 55:                                                    //JNE regaddress
+            if (flags == 0){
+                pc = memory[*registers[memory[pc+1]]]-1;
+            }else{
+                pc++;
+            }
+            break;
+
+        case 56:                                                    //MOD reg
             *registers[0] %= *registers[memory[pc+1]];
             flags = (*registers[0] == 0);
             pc++;
             break;
 
-        case 51:                                                    //MOD address
+        case 57:                                                    //MOD address
             *registers[0] %= memory[memory[pc+1]];
             flags = (*registers[0] == 0);
             pc++;
             break;
 
-        case 52:                                                    //MOD regaddress
+        case 58:                                                    //MOD regaddress
             *registers[0] %= memory[*registers[memory[pc+1]]];
             flags = (*registers[0] == 0);
             pc++;
