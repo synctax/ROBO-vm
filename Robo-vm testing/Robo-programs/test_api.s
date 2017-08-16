@@ -17,6 +17,7 @@
     MOV edx #0
     .loop:
         MOV ecx [eax]  ; Get char from var
+        ADD ecx .current_color ;add color
         MOV [ebx] ecx  ; Write to output
         INC eax
         INC ebx
@@ -123,6 +124,17 @@
     .print_number_to_end_ascii_offset: DB 48
     .print_number_to_end_start_flag: DB 0
 
+.set_color: ;sets draw color to eax foreground and ebx background
+    PUSH eax PUSH ebx PUSH ecx
+    MOV ecx #12
+    SHL eax ecx
+    MOV ecx #8
+    SHL ebx ecx
+    ADD eax ebx
+    MOV .current_color eax
+    POP ecx POP ebx POP eax
+    RET
+    
 
 .timer:            ;does eax*.timer_multiplier subtractions
     MUL .timer_multiplier
@@ -148,7 +160,7 @@
 .timer_multiplier: DB 60000
 .last_print_loc: DB 61952
 .num_to_array_array: DB [4]
-
+.current_color: DB 0x6000 ;white on black
 .KEY_q: DB 71
 
 .MEM_SIZE: DB 64000
@@ -156,3 +168,4 @@
 .COLUMNS: DB 64
 .MONITOR_ADDRESS: DB 61952
 .KEY_ADDRESS: DB 61950
+.COLOR_BLACK: DB 0 .COLOR_RED: DB 1 .COLOR_GREEN: DB 2 .COLOR_YELLOW: DB 3 .COLOR_BLUE: DB 4 .COLOR_MAGENTA: DB 5 .COLOR_CYAN: DB 6 .COLOR_WHITE: DB 7
