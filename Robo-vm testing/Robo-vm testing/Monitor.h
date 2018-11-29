@@ -17,19 +17,13 @@
 #define Monitor_h
 
 typedef uint16_t i16;
-void keyThreadFunc(int* key, bool* quit);
 
 class Monitor{
 public:
     Monitor();
     void start();
     void update(std::vector<i16> m, i16 i);
-    int getKey();
     void close();
-private:
-    int keyPressed = 0;
-    bool keyThreadShouldQuit = false;
-    //void keyThreadFunc();
 };
 
 #endif

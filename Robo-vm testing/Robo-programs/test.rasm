@@ -1,0 +1,12 @@
+(PASTE "test_api.rasm")
+
+.start:
+    MOV esp .end
+    MOV eax #3
+    MOV eax [.COLOR_RED] MOV ebx [.COLOR_MAGENTA]
+    CALL .set_color
+    MOV eax .string
+    CALL .print_to_end
+    HLT
+
+.string: DB " HELLO WORLD! "

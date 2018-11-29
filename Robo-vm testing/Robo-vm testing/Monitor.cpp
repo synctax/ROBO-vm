@@ -8,8 +8,6 @@
 
 #include "Monitor.h"
 
-std::unique_ptr<std::thread> keyThread;
-
 Monitor::Monitor(){}
 
 void Monitor::start(){
@@ -17,22 +15,9 @@ void Monitor::start(){
     initscr();
     noecho();
     cbreak();
-    nodelay(stdscr,true);
+    timeout(-1);
     keypad(stdscr, true);
     start_color();
-    //keyThread = std::unique_ptr<std::thread>(new std::thread(keyThreadFunc,&keyPressed,&keyThreadShouldQuit));
-}
-
-void keyThreadFunc(int* key, bool* quit){
-    //std::cout << "checking keys" << std::endl;
-    while(!*quit){
-        int c = getch();
-        if (c != ERR){
-            *key = c;
-        }else{
-            *key = 0;
-        }
-    }
 }
 
 void Monitor::update(std::vector<i16> m, i16 i){
@@ -43,7 +28,6 @@ void Monitor::update(std::vector<i16> m, i16 i){
         for(int x = 0; x < 64; x++){
             int c = m[(y*64)+x+i];
             symbol = c&0x00ff;
-            std::cout << symbol;
             if (symbol != '\0'){
                 FGcolor = (c&0xf000) >> 12;
                 BGcolor = (c&0x0f00) >> 8;
@@ -58,14 +42,6 @@ void Monitor::update(std::vector<i16> m, i16 i){
     refresh();
 }
 
-int Monitor::getKey(){
-    return keyPressed;
-}
-
 void Monitor::close(){
-    while (getch() != 'q'){
-    }
-    keyThreadShouldQuit = true;
-    keyThread->join();
     endwin(); 
 }

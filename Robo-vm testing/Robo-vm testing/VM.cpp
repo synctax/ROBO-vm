@@ -98,7 +98,7 @@ void VM::closeMonitor(){
 }
 
 void VM::getKey(){
-    memory[keyAddr] = screen.getKey();
+    //memory[keyAddr] = screen.getKey();
 }
 
 void VM::run(){
